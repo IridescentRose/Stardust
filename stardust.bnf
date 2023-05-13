@@ -1,0 +1,83 @@
+<program> ::= [<import_statements>] [<global_variable_declarations>] [<global_structure_declarations>] [<global_enum_declarations>] [<function_declarations>] <main_function_declaration>
+
+<import_statements> ::= <import_statement> | <import_statement> <import_statements>
+<import_statement> ::= "import" <string_literal>
+
+<global_variable_declarations> ::= <global_variable_declaration> | <global_variable_declaration> <global_variable_declarations>
+<global_variable_declaration> ::= [<access_modifier>] <variable_declaration>
+<variable_declaration> ::= <constness> <identifier> ":" <type> | <constness> <identifier> [ ":" <type> ] "=" <expression>
+<constness> ::= "var" | "const"
+
+<type> ::= "u8" | "u16" | "u32" | "u64" | "i8" | "i16" | "i32" | "i64" | "f32" | "f64" | "bool" | <array_type> | <identifier>
+<array_type> ::= <type> "[" <array_size> "]"
+<array_size> ::= <integer_literal>
+
+<global_structure_declarations> ::= [<access_modifier>] <structure_declaration> | [<access_modifier>] <structure_declaration> <global_structure_declarations>
+<structure_declaration> ::= "struct" <identifier> "{" <data_members> [<function_declarations>] "}"
+<data_members> ::= <data_member> | <data_member> "," <data_members>
+<data_member> ::= <identifier> ":" <type> ["=" <expression>]
+
+<function_declarations> ::= <function_declaration> | <function_declaration> <function_declarations>
+<function_declaration> ::= <access_modifier> "fn" <identifier> "(" <arguments> ")" [<type>] "{" <statements> "}"
+
+<main_function_declaration> ::= "pub" "fn" "main" "(" <arguments> ")" [<type>] "{" <statements> "}"
+
+<access_modifier> ::= "pub" | //None
+
+<arguments> ::= <argument> | <argument> "," <arguments>
+<argument> ::= <identifier> ":" <type>
+
+<global_enum_declarations> ::= [<access_modifier>] <enum_declaration> | [<access_modifier>] <enum_declaration> <enum_declarations>
+<enum_declarations> ::= <enum_declaration> | <enum_declaration> <enum_declarations>
+<enum_declaration> ::= "enum" <identifier> ["(" <type> ")"] "{" <enums> "}"
+<enums> ::= <enum> | <enum> "," <enums>
+<enum> ::= <identifier> ["=" <expression>]
+
+<statements> ::= <statement> | <statement> <statements>
+<statement> ::= <basic_statement> | <if_statement> | <while_statement> | <match_statement> | <return_statement>
+
+<while_statement> ::= "while" "(" <expression> ")" "{" <statements> "}"
+<match_statement> ::= "match" "(" <identifier> ")" "{" <cases> "}"
+<cases> ::= <case> | <case> "," <cases>
+<case> ::= <primitive_expression> "=>" "{" <statements> "}"
+
+<return_statement> ::= "return" <expression>
+
+<if_statement> ::= "if" "(" <expression> ")" "{" <statements> "}" [<else_if_statements>] [<else_statement>]
+<else_if_statements> ::= <else_if_statement> | <else_if_statement> <else_if_statements>
+<else_if_statement> ::= "else" "if" "(" <expression> ")" "{" <statements> "}"
+<else_statement> ::= "else" "{" <statements> "}"
+
+<basic_statement> ::= <variable_declaration> | <structure_declaration> | <enum_declarations> | <expression>
+
+// x = x
+// x = 10.0
+// x = "hello"
+// x = true
+// x = x + 5
+// x = (x + 5) + 7
+// x = (x == 8)
+<expression> ::= <identifier> "=" <expression> | <expression> <op> <expression> | <expression> <comp> <expression> | <primitive_expression> | "(" <expression> ")"
+
+<identifier> ::= <letter> [<letters_continued>+]
+<letters_continued> ::= <letter> | <digit> | "_"
+
+<comp> ::= "||" | "&&" | "!" | "==" | "!=" | "<" | ">" | ">=" | "<="
+<op> ::= "+" | "-" | "*" | "/" | "%" | "^"
+<primitive_expression> ::= <identifier> | <numeric_literal> | <string_literal> | <boolean_literal>
+
+<numeric_literal> ::= <integer_literal> | <float_literal>
+<integer_literal> ::= <decimal_literal> | <hexadecimal_literal>
+<decimal_literal> ::= <digit>+
+<hexadecimal_literal> ::= "0x" <hex_digit>+
+<float_literal> ::= <decimal_literal> "." <decimal_literal> ["f"]
+<boolean_literal> ::= "true" | "false"
+
+<string_literal> ::= '"' <characters> '"'
+<characters> ::= <character> | <character> <characters>
+<character> ::= <letter> | <digit> | <symbol>
+<letter> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<hex_digit> ::= <digit> | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "e" | "f"
+<symbol> ::= "!" | "#" | "$" | "%" | "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "[" | "]" | "^" | "_" | "`" | "{" | "|" | "}" | "~" | " " | '\' <control-character>
+<control-character> ::= "n" | "t" | "r" | "b" | '"' |  '\'
