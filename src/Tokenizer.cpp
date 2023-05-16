@@ -30,6 +30,7 @@ std::map<std::string, TokenType> tokenMap = {
         {"i64", TokenType::I64},
         {"f32", TokenType::F32},
         {"f64", TokenType::F64},
+        {"bool", TokenType::Bool},
         {"true", TokenType::True},
         {"false", TokenType::False},
 };
@@ -195,6 +196,12 @@ auto Tokenizer::tokenize_line(std::string input, int lineNumber) -> void {
                 break;
             }
 
+            case ';': {
+                addRemainingToken(i);
+                tokens.push_back({TokenType::Semicolon, std::string(1, c), static_cast<uint32_t>(lineNumber), static_cast<uint32_t>(i)});
+                break;
+            }
+
             case ' ':
             case '\t':
             case '\n':
@@ -206,8 +213,7 @@ auto Tokenizer::tokenize_line(std::string input, int lineNumber) -> void {
             }
 
             default: {
-                if(c != ';')
-                    current_token += c;
+                current_token += c;
                 break;
             }
         }
@@ -226,10 +232,14 @@ auto Tokenizer::tokenize_all() -> void {
 
 auto Tokenizer::next() -> Token {
     if(tokens.size() > currentToken) {
-        return tokens[currentToken++];
+        return tokens[currentToken];
     }
 
     return Token::EndOfFileToken;
+}
+
+auto Tokenizer::skip() -> void {
+    currentToken++;
 }
 
 auto Tokenizer::get_tokens() -> const std::vector<Token>& {

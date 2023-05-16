@@ -22,9 +22,11 @@ enum class TokenType {
     U8, U16, U32, U64,
     I8, I16, I32, I64,
     F32, F64,
+    Bool,
     True,
     False,
     Numeric,
+    Semicolon,
     LeftParen,
     LeftBracket,
     LeftBrace,
@@ -66,7 +68,13 @@ inline auto token_to_string(TokenType type) -> std::string {
             
         case TokenType::Const:
             return "Const";
-            
+
+        case TokenType::Bool:
+            return "Bool";
+
+        case TokenType::Semicolon:
+            return "Semicolon";
+
         case TokenType::Struct:
             return "Struct";
             
@@ -230,6 +238,7 @@ public:
 
     auto tokenize_all() -> void;
     auto next() -> Token;
+    auto skip() -> void;
     auto get_tokens() -> const std::vector<Token>&;
 private:
     auto tokenize_line(std::string input, int lineNumber) -> void;

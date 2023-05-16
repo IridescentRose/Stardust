@@ -1,8 +1,6 @@
 #include <iostream>
-#include <string>
 #include <vector>
-#include <sstream>
-#include <fstream>
+#include "parse/Parser.hpp"
 #include "Tokenizer.hpp"
 
 auto jsonify(std::ostream& ostream, const std::vector<Token>& tokens) -> void {
@@ -37,6 +35,9 @@ auto main(int argc, char** argv) -> int {
 
     std::ofstream myFile("test.json");
     jsonify(myFile, tokens);
+
+    Parser parser;
+    parser.parse(tokenizer);
 
     return 0;
 }
